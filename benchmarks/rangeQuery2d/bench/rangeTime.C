@@ -54,6 +54,10 @@ void timeRange(Points const &points, Queries const& queries,
   cout << endl;
   long total = parlay::reduce(R);
   cout << "total count = " << total << endl;
+
+  if(R.size() < 100){
+    parlay::map(R,[&] (long c) {printf("query count: %ld \n", c); return 0;});
+  }
   if (outFile != NULL) writeSequenceToFile(R, outFile);
 }
 
