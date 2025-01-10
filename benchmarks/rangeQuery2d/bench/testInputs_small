@@ -6,8 +6,16 @@ checkProgram="../bench/rangeCheck"
 dataDir = "../geometryData/data"
 
 tests = [
-    [1, "2DinCube_1000000", "", ""],
-    [1, "2Dkuzmin_1000000", "", ""],
+    [1, "2DinCube_10000", "", ""],
+    [1, "2Dkuzmin_10000", "", ""],
+    # [1, "2DinCube_1000000", "", ""],
+    # [1, "2Dkuzmin_1000000", "", ""],
+    [1, "3_p_0.in", "", ""],
+    [1, "3_p_1a.in", "", ""],
+    [1, "3_p_1b.in", "", ""],
+    [1, "6_p_1_1a.in", "", ""],
+    [1, "6_p_1_1b.in", "", ""],
+    [1, "6_p_2_0.in", "", ""],
 ]
 
 import sys
