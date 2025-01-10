@@ -34,10 +34,10 @@ typedef coord data_type;
 typedef pair<data_type, data_type> point_type;
 
 
-long range(Points const &pts, Queries const &queries, bool verbose) 
+parlay::sequence<long>  range(Points const &pts, Queries const &queries, bool verbose) 
 {
 	
-	std::cout << "start running ..." << std::endl;
+	// std::cout << "start running ..." << std::endl;
     typedef bg::model::point<data_type, 2, bg::cs::cartesian> point;
     typedef bg::model::segment<point> segment;
     typedef std::pair<point, int> value;
@@ -50,7 +50,7 @@ long range(Points const &pts, Queries const &queries, bool verbose)
 	
 	int n = pts.size();
 	
-	cout << "point size: " << n << endl;
+	// cout << "point size: " << n << endl;
 	
 	//vector<point_type> ps = generate_points(n, min_val, max_val);
 	//vector<query_type> queries = generate_queries(num_queries, min_val, max_val);
@@ -66,22 +66,22 @@ long range(Points const &pts, Queries const &queries, bool verbose)
 
 	//bgi::rtree< value, bgi::quadratic<16> > rtree(segments.begin(), segments.end());
 	
-	std::cout << "start building ..." << std::endl;
+	// std::cout << "start building ..." << std::endl;
 	parlay::internal::timer t("range", verbose);
 	bgi::rtree<value, bgi::linear<16, 4> > rtree(points.begin(), points.end());
 	
-	cout << "build finished"  << endl;
+	// cout << "build finished"  << endl;
 	t.next("build");
 	
 	size_t total = 0;
-	//int num_queries = queries.size();
+	int num_queries = queries.size();
 	// It takes very long for queries, so using q_num = n/3 may take forever
-	int num_queries = 1000;
+	// int num_queries = 1000;
 	size_t* total_array = new size_t[num_queries];
 	
-	cout << "query size: " << num_queries << endl;
+	// cout << "query size: " << num_queries << endl;
 	
-	cout << "start querying ..."  << endl;
+	// cout << "start querying ..."  << endl;
 	#pragma omp parallel for
 	for (int i = 0; i < num_queries; i++) {
 		//cout << "query: " << queries[i].x1 << " " << queries[i].y1 << " " << queries[i].x2 << " " << queries[i].y2 << endl;
@@ -95,9 +95,10 @@ long range(Points const &pts, Queries const &queries, bool verbose)
 	//cout << "query time: " << query_tm.stop() << endl;
 	t.next("query");
 	for (int i = 0; i < num_queries; i++) total+=total_array[i];
-	cout << "total: " << total << endl;
+	// cout << "total: " << total << endl;
     //]
-	
+	return parlay::tabulate(num_queries, [&] (size_t i) {
+     return (long)total_array[i];});
     
 
     // note: in Boost.Geometry WKT representation of a box is polygon
@@ -110,7 +111,6 @@ long range(Points const &pts, Queries const &queries, bool verbose)
     //BOOST_FOREACH(value const& v, result_s)
         //std::cout << bg::wkt<box>(v.first) << " - " << v.second << std::endl;
 
-    return total;
 }
 
 //]
